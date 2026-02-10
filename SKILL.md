@@ -19,9 +19,13 @@ If the user provides raw HAR JSON instead of a file, accept it, but prefer a fil
 
 ## Workflow
 1. Validate that `har_file` exists and ends with `.har`; if missing, ask for the file path.
-2. Parse the HAR JSON and confirm `log.entries` exists; if missing, ask for a complete HAR.
-3. Flatten `log.entries` into a list of requests.
-4. If `start_time`/`end_time` provided, filter entries by `startedDateTime` within the window.
+2. If `start_time`/`end_time` provided, preprocess the HAR using the bundled parser at `./bin/har-parser`. Always run the command from the skill directory so the relative path works. If the working directory is different, use the absolute skill path (e.g., `/Users/<user-name>/.codex/skills/har-debugger/bin/har-parser`).
+```
+./bin/har-parser -- --file <har_file> --start "<start_time>" --end "<end_time>" --format har --out output.har
+```
+Use `output.har` for all remaining analysis. Time format must match the parser input, for example `10/02/2026 03:02:00`.
+3. Parse the HAR JSON and confirm `log.entries` exists; if missing, ask for a complete HAR.
+4. Flatten `log.entries` into a list of requests.
 5. Extract for each entry: `request.method`, `request.url`, `response.status`, `response.statusText`, `time`, `timings`, `startedDateTime`, response headers (`response.headers`), and response body when available (`response.content.text`).
 6. If present, capture response header time (e.g., `Date` header) as the server-reported response time.
 7. Compute response received time as `startedDateTime + time` (milliseconds) to compare client vs server timestamps.
