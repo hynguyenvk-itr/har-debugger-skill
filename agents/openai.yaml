@@ -1,0 +1,4 @@
+interface:
+  display_name: "HAR Debugger"
+  short_description: "Analyze HAR files for failed or slow requests"
+  default_prompt: "File har: <path-to-file-har>. Description: <enter-bug-description>. Time: <optional-start-and-end-time-for-analysis>"
